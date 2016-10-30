@@ -20,62 +20,6 @@ def choose_difficulty_level():
             break
     return random_word
 
-def input_check():
-    good_guesses = []
-    bad_guesses = []
-    disp = '_'*len(random_word)
-    guess_count = 8
-    while '_' in disp and guess_count > 0:
-        guess = input("Enter a letter: ").lower()
-        if len(guess) > 1:
-            print("One letter at the time")
-        elif not guess.isalpha():
-            print("Letters only")
-        elif guess == '^q':
-            break
-        elif '_' not in disp:
-            print("You won!!!")
-            break
-        elif guess in good_guesses or guess in bad_guesses:
-            print("You've already tried it")
-        else:
-            if guess in random_word:
-                print("You've got it! Attempts left: {}".format(guess_count))
-                good_guesses += guess
-                index = 0
-                while len(random_word) > 0:
-                    index = random_word.find(guess, index)
-                    if index == -1:
-                        break
-                    disp = disp[:index] + guess + disp[(index + 1):]
-                    index += 1
-            else:
-                guess_count -=1
-                bad_guesses += guess
-                print("Missed, try again. Attempts left: {}".format(guess_count))
-            print(disp)
-            print("Good guesses: {}".format(good_guesses))
-            print("Bad guesses: {}".format(bad_guesses))
-    else:
-        if guess_count == 0:
-            print("You are out of guesses!")
-            print("The word was: {}".format(random_word))
-            if play_again():
-                main()
-            else:
-                os.system('clear')
-        else:
-            print("You won!!!")
-            if play_again():
-                main()
-            else:
-                os.system('clear')
-
-def play_again():
-    play_again = input("Do you want to play again?: \n ['Y'/'n']").lower()
-    if play_again == 'y':
-        return True
-
 def give_me_easy_words():
     comb_list = []
     easy_words = []
@@ -84,7 +28,7 @@ def give_me_easy_words():
             words = line.split()
             comb_list += words
         for word in comb_list:
-            if len(str(word)) > 4 and len(str(word)) < 6:
+            if len(str(word)) > 3 and len(str(word)) < 6:
                 easy_words.append(word)
     return easy_words
 
@@ -112,10 +56,72 @@ def give_me_hard_words():
                 hard_words.append(word)
     return hard_words
 
+def input_check():
+    good_guesses = []
+    bad_guesses = []
+    disp = '_'*len(random_word)
+    guess_count = 8
+    while '_' in disp and guess_count > 0:
+        user_guess()
+        if len(guess) > 1:
+            print("One letter at the time")
+        elif not guess.isalpha():
+            print("Letters only")
+        elif guess == '^q':
+            break
+        elif '_' not in disp:
+            print("You won!!!")
+            break
+        elif guess in good_guesses or guess in bad_guesses:
+            print("You've already tried it")
+        else:
+            if lettet_in_secret_word(guess, random_word):
+                print("You've got it! Attempts left: {}".format(guess_count))
+                good_guesses += guess
+                index = 0
+                while len(random_word) > 0:
+                    index = random_word.find(guess, index)
+                    if index == -1:
+                        break
+                    disp = disp[:index] + guess + disp[(index + 1):]
+                    index += 1
+            else:
+                guess_count -=1
+                bad_guesses += guess
+                print("Missed, try again. Attempts left: {}".format(guess_count))
+            print(disp)
+    else:
+        if guess_count == 0:
+            print("You are out of guesses!")
+            print("The word was: {}".format(random_word))
+            if play_again():
+                main()
+            else:
+                os.system('clear')
+        else:
+            print("You won!!!")
+            if play_again():
+                main()
+            else:
+                os.system('clear')
+
+def user_guess():
+    global guess
+    guess = input("Enter a letter: ").lower()
+    return guess
+
+def lettet_in_secret_word(guess, random_word):
+    if guess in random_word:
+        return True
+
+def play_again():
+    play_again = input("Do you want to play again?: \n ['Y'/'n']").lower()
+    if play_again == '' or play_again == 'y':
+        return True
+
 def main():
     os.system('clear')
     choose_difficulty_level()
-    print(random_word)
     print('_'*len(random_word))
     input_check()
 

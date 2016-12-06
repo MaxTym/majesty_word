@@ -67,10 +67,8 @@ def input_check(secret_word):
     guess_count = 8
     while '_' in disp and guess_count > 0:
         guess = user_guess()
-        if len(guess) > 1:
-            print("One letter at the time")
-        elif not guess.isalpha():
-            print("Letters only")
+        if not valid_guess(guess):
+            print("Invalid input")
         elif guess == '^q':
             break
         elif guess in good_guesses or guess in bad_guesses:
@@ -115,8 +113,12 @@ def win_condition():
         os.system('clear')
 
 
+def valid_guess(guess):
+    if len(guess) == 1 and guess.isalpha():
+        return True
+
+
 def user_guess():
-    global guess
     guess = input("Enter a letter: ").lower()
     return guess
 
